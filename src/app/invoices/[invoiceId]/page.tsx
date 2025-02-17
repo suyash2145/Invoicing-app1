@@ -1,15 +1,21 @@
-import { notFound } from "next/navigation";
+// "use client";
+// "use strict";
 
-import { eq } from "drizzle-orm";
+
+import { notFound , redirect } from "next/navigation";
+import { eq , and, isNull } from "drizzle-orm";
+import { auth } from "@clerk/nextjs/server";
 
 import { database } from '@/database';
-import { Invoices } from '@/database/schema';
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-
+import { Customers, Invoices11 } from '@/database/schema';
+import Invoice from "./invoice";
 
 
 export default async function InvoicePage( { params }: { params: { invoiceId: string; } }) {
+    const { userId, orgId } = await auth();
+
+     if ( !userId ) return;
+
     const invoiceId = parseInt(params.invoiceId)  
     
     // parseInt('asdf');
@@ -17,76 +23,61 @@ export default async function InvoicePage( { params }: { params: { invoiceId: st
         throw new Error('Invalid Invoice ID');
     }
 
-    const [result] = await database
-    .select()
-    .from(Invoices)
-    .where(eq(Invoices.id, invoiceId))
-    .limit(1);
+   let result;
 
+    if ( orgId ) {
+        
+    [result] = await database
+    .select()
+    .from(Invoices11)
+    .innerJoin(Customers, eq(Invoices11.customerId, Customers.id))
+    .where(
+        and(
+        eq(Invoices11.id, invoiceId),
+        eq(Invoices11.OrganizationId, orgId),
+        )
+    )
+    .limit(1);
+    console.log('result', result)
+    }else{
+        
+    [result] = await database
+    .select()
+    .from(Invoices11)
+    .innerJoin(Customers, eq(Invoices11.customerId, Customers.id))
+    .where(
+        and(
+        eq(Invoices11.id, invoiceId),
+        eq(Invoices11.userId, userId),
+        isNull(Invoices11.OrganizationId)
+        )
+    )
+    .limit(1);
     
+    console.log('result', result)
+
+    }
+
     if ( !result ) {
         notFound();
     }
+
+     const invoice = {
+        ...result.invoices11,
+        customer: result.customers
+     }
+
     // console.log('result', result);
-    
-  return (
-      <main className="h-full max-w-5xl mx-auto my-12">
-            <div className="flex justify-between mb-8">
-        <h1 className="flex items-center gap-4 text-3xl font-semibold">
-            Invoice { invoiceId }
-            <Badge className={cn(
-                "rounded-full capitalize",
-                result.status === 'open' && 'bg-blue-500',
-                result.status === 'paid' && 'bg-green-600',
-                result.status === 'void' && 'bg-zinc-600',
-                result.status === 'uncollectible' && 'bg-red-600',
-            )}>
-          { result.status }
-        </Badge>
-        </h1>
-        <p>            
-        </p>
-        </div>
 
-        <p className="text-3xl mb-3">
-        Rs { (result.value / 100).toFixed(2) }
-        </p>
+    async function handleDelete() {
+        "use server"; // Ensures this runs on the server
+        await database.delete(Invoices11).where(eq(Invoices11.id, invoiceId));
+        // console.log("Invoice deleted:", invoiceId);
+        // redirect("/dashboard"); 
+        console.log("Invoice deleted:", invoiceId);
+      }
 
-        <p className="text-lg mb-8">
-          { result.description }
-        </p>
-        <h2 className="font-bold text-lg mb-4">
-            Billing details
-        </h2>
-
-        <ul className="grid gap-2">
-            <li className="flex gap-4">
-                <strong className="lock w-28 flex-shrink-0 font-medium text-sm">Invoice ID</strong>
-                <span>
-                    { invoiceId }
-                </span>
-            </li>
-            <li className="flex gap-4">
-                <strong className="lock w-28 flex-shrink-0 font-medium text-sm">Invoice Date</strong>
-                <span>
-                { new Date(result.createTs).toLocaleDateString()}
-                </span>
-            </li>
-            <li className="flex gap-4">
-                <strong className="lock w-28 flex-shrink-0 font-medium text-sm">Billing Name</strong>
-                <span>
-        
-                </span>
-            </li>
-            <li className="flex gap-4">
-                <strong className="lock w-28 flex-shrink-0 font-medium text-sm">Phone no</strong>
-                <span></span>
-            </li>
-            <li className="flex gap-4">
-                <strong className="lock w-28 flex-shrink-0 font-medium text-sm">Billing Email</strong>
-                <span></span>
-            </li>
-        </ul>
-            </main>            
-  );
+  return <Invoice invoice={invoice}/>
 }
+
+

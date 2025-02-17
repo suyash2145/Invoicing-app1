@@ -8,6 +8,181 @@
       "when": 1738834104438,
       "tag": "0000_low_vampiro",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1739459228526,
+      "tag": "0001_fresh_celestials",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1739468320979,
+      "tag": "0002_curved_morlocks",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1739468456618,
+      "tag": "0003_lowly_lady_vermin",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1739505734252,
+      "tag": "0004_normal_prima",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1739549690714,
+      "tag": "0005_superb_clea",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1739550546560,
+      "tag": "0006_real_virginia_dare",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1739551390734,
+      "tag": "0007_illegal_typhoid_mary",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1739551969899,
+      "tag": "0008_redundant_spirit",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1739552442007,
+      "tag": "0009_amused_ultimo",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1739555283818,
+      "tag": "0010_sticky_giant_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1739555465277,
+      "tag": "0011_dizzy_zarek",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1739556063630,
+      "tag": "0012_dark_risque",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1739556342703,
+      "tag": "0013_damp_madrox",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1739556878487,
+      "tag": "0014_broken_virginia_dare",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1739591712808,
+      "tag": "0015_graceful_hedge_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1739593894420,
+      "tag": "0016_noisy_tag",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1739594139956,
+      "tag": "0017_regular_bloodstorm",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1739594685654,
+      "tag": "0018_mute_pandemic",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1739594829503,
+      "tag": "0019_magical_sue_storm",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1739625639779,
+      "tag": "0020_public_firestar",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1739626024154,
+      "tag": "0021_early_quasimodo",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1739626185434,
+      "tag": "0022_silent_sharon_ventura",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1739626268676,
+      "tag": "0023_rare_wrecking_crew",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1739762050535,
+      "tag": "0024_wakeful_norman_osborn",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1739762833930,
+      "tag": "0025_safe_tag",
+      "breakpoints": true
     }
   ]
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "invoices11" DROP COLUMN "razorpay_order_id";

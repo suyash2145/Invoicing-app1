@@ -1,5 +1,6 @@
 "use client";
 import { sql } from 'drizzle-orm';
+import { useParams } from "next/navigation";
 
 import { database } from '@/database';
 
@@ -12,6 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
 import  SubmitButton  from "@/components/SubmitButton"
+import Container from '@/components/Container';
 
  
 import { createAction } from '@/app/actions';
@@ -29,8 +31,9 @@ export default function Home() {
     
   return (
     
-      <main className="flex flex-col justify-center h-full gap-6 max-w-5xl mx-auto my-12">
-            <div className="flex justify-between">
+      <main className="h-full">
+            <Container>
+            <div className="flex justify-between mb-6">
         <h1 className="text-3xl font-semibold">
             Create Invoice
         </h1>
@@ -39,7 +42,7 @@ export default function Home() {
         {/* {JSON.stringify(results)} */}
             
             <Form action={createAction} onSubmit={handleOnSubmit} className="grid gap-4 max-w-xs">
-            {/* <form onSubmit={handleOnSubmit} className="grid gap-4 max-w-xs"> */}
+            
 
                 <div>
                     <Label htmlFor="name" className="block font-semibold mb-2">Billing Name</Label>
@@ -66,7 +69,7 @@ export default function Home() {
                 </div>
                 
             </Form>
-
+            </Container>
             </main>
             
   );

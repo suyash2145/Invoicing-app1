@@ -1,7 +1,8 @@
 import { CirclePlus } from 'lucide-react';
+import { auth } from '@clerk/nextjs/server'; 
 
 import { database } from '@/database';
-import { Invoices } from '@/database/schema';
+import { Customers, Invoices11 } from '@/database/schema';
 
 import {
     Table,
@@ -14,17 +15,65 @@ import {
   } from "@/components/ui/table"
   import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button";
+import Container from "@/components/Container";
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { eq, and, isNull } from 'drizzle-orm';
 
 
 export default async function Home() {
-  const results = await database.select().from(Invoices);
+  const { userId, orgId } = await auth();
+
+  if (!userId)
+    return;
+
+
+let results;
+
+  if ( orgId ) {
+    
+   results = await database.select()
+  .from(Invoices11)
+  // .where(eq(Invoices11.OrganizationId, orgId))
+  .innerJoin(Customers, eq(Invoices11.customerId, Customers.id))
+  .where(eq(Invoices11.OrganizationId, orgId))
+  // .orderBy(Invoices11.id);
   console.log('results', results)
+  }else{
+    results = await database.select()
+    .from(Invoices11)
+    // .where(eq(Invoices11.userId, userId))
+    .innerJoin(Customers, eq(Invoices11.customerId, Customers.id))
+    .where(
+      and(
+      eq(Invoices11.userId, userId),
+      isNull(Invoices11.OrganizationId)
+    )
+    )
+    // .orderBy(Invoices11.id);
+    console.log('results', results)
+
+  }
+
+  // const results = await database.select()
+  // .from(Invoices11)
+  // .where(eq(Invoices11.userId, userId))
+  // .innerJoin(Customers, eq(Invoices11.customerId, Customers.id))
+  // .orderBy(Invoices11.id);
+  // console.log('results', results)
+
+  const invoices = results?.map(({ invoices11, customers}) => {
+   return{
+    ...invoices11,
+    customer: customers
+   }
+  })
+
   return (
     
-      <main className="flex flex-col justify-center h-full text-center gap-6 max-w-5xl mx-auto my-12">
-            <div className="flex justify-between">
+      <main className="h-full">
+           <Container>
+            <div className="flex justify-between mb-6">
         <h1 className="text-3xl font-semibold">
             Invoices
         </h1>
@@ -62,7 +111,7 @@ export default async function Home() {
               </TableRow>
             </TableHeader>
        <TableBody>
-        {results.map(result => {
+        {invoices.map(result => {
           return (
             <TableRow key={result.id}>
       <TableCell className="font-medium text-left p-0">
@@ -73,17 +122,17 @@ export default async function Home() {
         </TableCell>
       <TableCell className="text-left p-0">
         <Link href={`/invoices/${result.id}`} className="block p-4 font-semibold">
-        Suraj Kumar
+        { result.customer.name}
         </Link>
         </TableCell>
       <TableCell className="text-left p-0">
         <Link className="block p-4" href={`/invoices/${result.id}`}>
-            Surajk2332@gmail.com
+            { result.customer.email}
         </Link>
         </TableCell>
         <TableCell className="text-left p-0">
         <Link className="block p-4" href={`/invoices/${result.id}`}>
-            9080706050
+            { result.customer.phone}
         </Link>
         </TableCell>
       <TableCell className="text-center p-0">
@@ -110,7 +159,7 @@ export default async function Home() {
         })}
        </TableBody>
            </Table>
-
+           </Container>
             </main>
             
   );

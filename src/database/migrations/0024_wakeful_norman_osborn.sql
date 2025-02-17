@@ -1,0 +1,1 @@
+ALTER TABLE "invoices11" ADD COLUMN "razorpay_order_id" text;
