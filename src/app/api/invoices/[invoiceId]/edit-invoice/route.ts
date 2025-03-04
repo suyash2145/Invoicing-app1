@@ -1,33 +1,31 @@
-
 import { revalidatePath } from "next/cache"; // ✅ Import
 import { NextResponse } from "next/server";
 import { database, Invoices11, Customers } from "@/database";
 import { eq } from "drizzle-orm";
 
-// ✅ Handle PUT request to update an invoice and its customer
-export async function PUT(req: Request, { params }: { params: { invoiceId: string } }) {
+export async function PUT(req: Request, context: { params: { invoiceId: string } }) {
     try {
-        if (!params.invoiceId) {
+        const { invoiceId } = context.params; // ✅ Correct way to access params
+
+        if (!invoiceId) {
             return NextResponse.json({ error: "Invoice ID is required" }, { status: 400 });
         }
 
-        const invoiceId = Number(params.invoiceId); // ✅ Convert to a number
-        if (isNaN(invoiceId)) {
+        const invoiceIdNum = Number(invoiceId);
+        if (isNaN(invoiceIdNum)) {
             return NextResponse.json({ error: "Invalid Invoice ID" }, { status: 400 });
         }
 
         const { name, email, phone, value, description } = await req.json();
 
-        // ✅ Validate required fields
         if (!name || !email || !phone || value === undefined || !description) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        // 🔍 Check if the invoice exists and get the customerId
         const existingInvoice = await database
             .select({ customerId: Invoices11.customerId })
             .from(Invoices11)
-            .where(eq(Invoices11.id, invoiceId))
+            .where(eq(Invoices11.id, invoiceIdNum))
             .limit(1);
 
         if (existingInvoice.length === 0) {
@@ -36,41 +34,27 @@ export async function PUT(req: Request, { params }: { params: { invoiceId: strin
 
         const customerId = existingInvoice[0].customerId;
 
-        // 📝 Update the invoice
-        const updatedInvoice = await database
+        await database
             .update(Invoices11)
             .set({ 
-                name, 
-                    email, 
-                    phone ,
-                value: Number(value) * 100, // ✅ Ensure correct type
+                value: Number(value) * 100,
                 description 
             })
-            .where(eq(Invoices11.id, invoiceId))
-            .returning();
+            .where(eq(Invoices11.id, invoiceIdNum))
+            .execute();
 
-        // 📝 Update the customer in the Customers table
         if (customerId) {
             await database
                 .update(Customers)
-                .set({ 
-                    name, 
-                    email, 
-                    phone ,
-                    // value: Number(value) * 100, // ✅ Ensure correct type
-                    description 
-                })
-                .where(eq(Customers.id, customerId));
+                .set({ name, email, phone })
+                .where(eq(Customers.id, customerId))
+                .execute();
         }
 
-        // 🔄 **Revalidate dashboard so it updates instantly**
-        // revalidatePath("/dashboard");
         revalidatePath(`/invoices/${invoiceId}`);
-        
 
         return NextResponse.json({ 
-            message: "✅ Invoice & Customer updated successfully!", 
-            invoice: updatedInvoice[0] 
+            message: "✅ Invoice & Customer updated successfully!" 
         }, { status: 200 });
 
     } catch (error) {
