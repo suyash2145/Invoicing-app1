@@ -1,39 +1,15 @@
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dailog"; // Fix typo from "dailog" to "dialog"
-import { eq, and, isNull } from "drizzle-orm";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
+import { eq } from "drizzle-orm";
 import { Customers, Invoices11 } from "@/database/schema";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-
-import DashboardBtn from "@/components/Dashboardbtn";
 import Container from "@/components/Container";
 
 import { Button } from "@/components/ui/button";
-import { AVAILABLE_STATUSES } from "@/data/invoices";
-import { createPayment, deleteInvoiceAction, updateStatusAction } from "@/app/actions";
-import { Bomb, ChevronDown, CreditCard, Ellipsis, SquareCheckBig } from "lucide-react";
-import { auth } from "@clerk/nextjs/server";
+import { createPayment, updateStatusAction } from "@/app/actions";
+import { CreditCard, SquareCheckBig } from "lucide-react";
 import { database } from "@/database";
 import { notFound} from "next/navigation";
-import Invoice from "../invoice";
-import { createStaticWorker } from "next/dist/build";
 import ViewPDFButton from "@/components/ViewPDFButton";
 
 

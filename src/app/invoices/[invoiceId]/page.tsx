@@ -1,83 +1,79 @@
-// "use client";
-// "use strict";
-
-
-import { notFound , redirect } from "next/navigation";
-import { eq , and, isNull } from "drizzle-orm";
+import { notFound } from "next/navigation";
+import { eq, and, isNull } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
 
 import { database } from '@/database';
 import { Customers, Invoices11 } from '@/database/schema';
 import Invoice from "./invoice";
+import { Button } from "@/components/ui/button";
 
-
-export default async function InvoicePage( { params }: { params: { invoiceId: string; } }) {
+export default async function InvoicePage({ params }: { params: { invoiceId: string } }) {
     const { userId, orgId } = await auth();
 
-     if ( !userId ) return;
+    if (!userId) return;
 
-    const invoiceId = parseInt(params.invoiceId)  
-    
-    // parseInt('asdf');
-    if ( isNaN( invoiceId )) {
+    const invoiceId = parseInt(params.invoiceId);
+
+    if (isNaN(invoiceId)) {
         throw new Error('Invalid Invoice ID');
     }
 
-   let result;
+    let result;
 
-    if ( orgId ) {
-        
-    [result] = await database
-    .select()
-    .from(Invoices11)
-    .innerJoin(Customers, eq(Invoices11.customerId, Customers.id))
-    .where(
-        and(
-        eq(Invoices11.id, invoiceId),
-        eq(Invoices11.OrganizationId, orgId),
-        )
-    )
-    .limit(1);
-    console.log('result', result)
-    }else{
-        
-    [result] = await database
-    .select()
-    .from(Invoices11)
-    .innerJoin(Customers, eq(Invoices11.customerId, Customers.id))
-    .where(
-        and(
-        eq(Invoices11.id, invoiceId),
-        eq(Invoices11.userId, userId),
-        isNull(Invoices11.OrganizationId)
-        )
-    )
-    .limit(1);
-    
-    console.log('result', result)
-
+    if (orgId) {
+        [result] = await database
+            .select()
+            .from(Invoices11)
+            .innerJoin(Customers, eq(Invoices11.customerId, Customers.id))
+            .where(
+                and(
+                    eq(Invoices11.id, invoiceId),
+                    eq(Invoices11.OrganizationId, orgId),
+                )
+            )
+            .limit(1);
+    } else {
+        [result] = await database
+            .select()
+            .from(Invoices11)
+            .innerJoin(Customers, eq(Invoices11.customerId, Customers.id))
+            .where(
+                and(
+                    eq(Invoices11.id, invoiceId),
+                    eq(Invoices11.userId, userId),
+                    isNull(Invoices11.OrganizationId)
+                )
+            )
+            .limit(1);
     }
 
-    if ( !result ) {
+    if (!result) {
         notFound();
     }
 
-     const invoice = {
+    const invoice = {
         ...result.invoices11,
         customer: result.customers
-     }
+    };
 
-    // console.log('result', result);
-
+    // Delete Invoice Function
     async function handleDelete() {
-        "use server"; // Ensures this runs on the server
+        "use server"; // Ensure it's a server function
         await database.delete(Invoices11).where(eq(Invoices11.id, invoiceId));
-        // console.log("Invoice deleted:", invoiceId);
-        // redirect("/dashboard"); 
         console.log("Invoice deleted:", invoiceId);
-      }
+        // Redirect manually if needed after deletion
+    }
 
-  return <Invoice invoice={invoice}/>
+    return (
+        <div>
+            <Invoice invoice={invoice} />
+            
+            {/* Delete Button */}
+            <div className="mt-4">
+                <Button onClick={handleDelete} variant="destructive">
+                    Delete Invoice
+                </Button>
+            </div>
+        </div>
+    );
 }
-
-

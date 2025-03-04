@@ -3,12 +3,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import SubmitButton from "@/components/SubmitButton";
-import Container from "@/components/Container";
 
 export default function EditInvoicePage() {
     const router = useRouter();
@@ -23,7 +20,6 @@ export default function EditInvoicePage() {
     const [description, setDescription] = useState("");
     const [submissionStatus, setSubmissionStatus] = useState<string | null>(null);
 
-    // Initialize state when the component mounts
     useEffect(() => {
         setName(searchParams.get("name") || "");
         setEmail(searchParams.get("email") || "");
@@ -68,49 +64,7 @@ export default function EditInvoicePage() {
     
 
     return (
-        // <main className="h-full">
-        //     <Container className="mt-4">
-        //         <h1 className="text-3xl font-semibold mb-6">Edit Invoice</h1>
-
-        //         <form onSubmit={handleSubmit} className="grid gap-4 max-w-xs">
-        //             <div>
-        //                 <Label htmlFor="name">Billing Name</Label>
-        //                 <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
-        //             </div>
-        //             <div>
-        //                 <Label htmlFor="email">Billing Email</Label>
-        //                 <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        //             </div>
-        //             <div>
-        //                 <Label htmlFor="phone">Billing Phone</Label>
-        //                 <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-        //             </div>
-        //             <div>
-        //                 <Label htmlFor="value">Value</Label>
-        //                 <Input id="value" type="text" value={value} onChange={(e) => setValue(e.target.value)} required />
-        //             </div>
-        //             <div>
-        //                 <Label htmlFor="description">Description</Label>
-        //                 <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
-        //             </div>
-        //             <div>
-        //                 <SubmitButton />
-        //             </div>
-        //         </form>
-
-        //         {submissionStatus && (
-        //             <div className="mt-4 text-center">
-        //                 <p className={`text-lg ${submissionStatus.includes("success") ? "text-green-500" : "text-red-500"}`}>
-        //                     {submissionStatus}
-        //                 </p>
-        //             </div>
-        //         )}
-        //     </Container>
-        // </main>
-
-
-
-
+      
         <main className="h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
             <h1 className="text-3xl font-semibold mb-6 text-center text-gray-800">Edit Invoice</h1>

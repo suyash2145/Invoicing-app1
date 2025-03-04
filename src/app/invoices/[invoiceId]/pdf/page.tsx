@@ -3,23 +3,35 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import InvoicePDF from "@/components/InvoicePDF"; // Import Server Component
+import InvoicePDF from "@/components/InvoicePDF";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
+interface Invoice {
+  id: number;
+  value: number;
+  status: "open" | "paid" | "void" | "uncollectible";
+  description?: string;
+  customer?: { name: string };
+}
+
 export default function InvoicePDFPage() {
-  const { invoiceId } = useParams();
-  const [invoice, setInvoice] = useState<any>(null);
+  const params = useParams();
+  const invoiceId = params.invoiceId as string;
+  const [invoice, setInvoice] = useState<Invoice | null>(null);
 
   useEffect(() => {
     async function fetchInvoice() {
-      const res = await fetch(`/api/invoices/${invoiceId}`);
-      if (res.ok) {
-        const data = await res.json();
+      try {
+        const res = await fetch(`/api/invoices/${invoiceId}`);
+        if (!res.ok) throw new Error("Failed to fetch invoice");
+        const data: Invoice = await res.json();
         setInvoice(data);
+      } catch (error) {
+        console.error("Error fetching invoice:", error);
       }
     }
-    fetchInvoice();
+    if (invoiceId) fetchInvoice();
   }, [invoiceId]);
 
   if (!invoice)
@@ -36,19 +48,21 @@ export default function InvoicePDFPage() {
         <h1 className="text-2xl font-bold text-gray-800 mb-4">Invoice PDF</h1>
         <p className="text-gray-600 mb-6">Download a PDF copy of your invoice.</p>
 
-        <PDFDownloadLink document={<InvoicePDF invoice={invoice} />} fileName={`invoice-${invoiceId}.pdf`}>
-          {({ loading }) => (
-            <Button className="w-full" disabled={loading}>
-              {loading ? (
-                <>
-                  <Loader2 className="h-5 w-5 animate-spin mr-2" /> Generating PDF...
-                </>
-              ) : (
-                "Download Invoice PDF"
-              )}
-            </Button>
-          )}
-        </PDFDownloadLink>
+        {invoice && (
+          <PDFDownloadLink document={<InvoicePDF invoice={invoice} />} fileName={`invoice-${invoiceId}.pdf`}>
+            {({ loading }) => (
+              <Button className="w-full" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin mr-2" /> Generating PDF...
+                  </>
+                ) : (
+                  "Download Invoice PDF"
+                )}
+              </Button>
+            )}
+          </PDFDownloadLink>
+        )}
       </div>
     </div>
   );

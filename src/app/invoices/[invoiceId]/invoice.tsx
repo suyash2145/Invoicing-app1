@@ -1,6 +1,4 @@
 "use client";
-
-
 import {
   Dialog,
   DialogContent,
@@ -24,16 +22,12 @@ import { Customers, Invoices11 } from '@/database/schema';
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import DeleteButton from "@/components/DeleteButton";
-
 import DashboardBtn from "@/components/Dashboardbtn";
 import Container from "@/components/Container";
-
 import { Button } from "@/components/ui/button";
 import { AVAILABLE_STATUSES } from "@/data/invoices";
 import { updateStatusAction, deleteInvoiceAction } from "@/app/actions";
-import { Bomb, ChevronDown, CreditCard, Ellipsis, IndianRupee, Mail, Pencil } from "lucide-react";
-// import router from "next/router";
+import { Bomb, ChevronDown, CreditCard, Ellipsis, Mail, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 
@@ -59,7 +53,8 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
         try{
         await updateStatusAction(formData);
         router.refresh();
-        } catch(e) {
+        } catch(error) {
+            console.error("Error updating status:", error);
             setCurrentStatus(originalStatus);
         }
     }
@@ -89,15 +84,11 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
                 alert(`Error: ${data.error}`);
             }
         } catch (error) {
+            console.error("An error occurred while sending email:", error);
             alert("An error occurred. Please try again.");
         }
     };
     
-
-
-
-
-
   return (
       <main className="w-full h-full">
         <Container className="mt-12">
@@ -114,11 +105,8 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
           { currentStatus }
         </Badge>
         </h1>
-        {/* <div className="flex gap-4"> */}
-            {/* Use DashboardBtn instead of Link */}
             <DashboardBtn />
         
-         {/* dropdown-menu code */}
 
                         <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -217,14 +205,9 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
                 Delete Invoice
                 </button>
                  </DialogTrigger>
-             </DropdownMenuItem>
-
-                              
+             </DropdownMenuItem>                              
                 </DropdownMenuContent>
-
-
                 </DropdownMenu>
-
   
   <DialogContent className="bg-white">
     <DialogHeader>
@@ -246,9 +229,6 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
   </DialogContent>
 </Dialog>
 
-   
-
-                {/* <DeleteButton onDelete={handleDelete} /> */}
         
         </div>
 
@@ -296,7 +276,6 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
 
         </Container>
          
-
             </main>            
   );
 }

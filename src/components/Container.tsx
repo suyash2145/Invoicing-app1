@@ -1,9 +1,7 @@
-// import { Container } from 'postcss'
 import { cn } from '@/lib/utils'
 import React from 'react'
-interface ContainerProps extends React.ComponentProps<"div">{
 
-}
+type ContainerProps = React.ComponentProps<"div">;
 
 const Container = ({ children, className, ...props }: ContainerProps) => {
   return (
@@ -13,4 +11,4 @@ const Container = ({ children, className, ...props }: ContainerProps) => {
   )
 }
 
-export default Container
+export default Container;

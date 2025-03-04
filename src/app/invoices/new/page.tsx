@@ -1,9 +1,6 @@
 
 "use client";
-import { SyntheticEvent, useState } from "react";
-import { useParams } from "next/navigation";
-
-import { Button } from "@/components/ui/button";
+import { SyntheticEvent} from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,16 +8,14 @@ import SubmitButton from "@/components/SubmitButton";
 import Container from "@/components/Container";
 import { createAction } from "@/app/actions";
 
-// Import Lucide icons
-import { User, Mail, Phone, DollarSign, FileText, IndianRupee } from "lucide-react";
+import { User, Mail, Phone, FileText, IndianRupee } from "lucide-react";
 
 export default function Home() {
-  const [state, setState] = useState("ready");
 
   async function handleOnSubmit(event: SyntheticEvent) {
-    if (state === "pending") {
+  
       event.preventDefault();
-    }
+    
     return;
   }
 
