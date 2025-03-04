@@ -9,11 +9,14 @@ import { database } from "@/database";
 import { and, eq, isNull } from 'drizzle-orm';
 import Razorpay from 'razorpay';
 import { NextResponse } from 'next/server';
-
+import { Resend } from 'resend';
+// import { LinearLoginCodeEmail } from '@/emails/invoice-created';
+import InvoiceCreatedEmail from '@/emails/invoice-created';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
 
-const stripe = new Stripe(String(process.env.STRIPE_API_SECRET));
+const stripe = new Stripe(String(process.env.STRIPE_API_SECRET!));
+const resend = new Resend(process.env.RESEND_API_KEY!);
 
 // const razorpay = new Razorpay({
 //     key_id: process.env.RAZORPAY_KEY_ID!,
@@ -56,12 +59,6 @@ const [customer] = await database.insert(Customers)
             id: Customers.id
         });
 
-    // const customer = customer[0];
-
-    // if (!customer) {
-    //     throw new Error("Failed to insert customer");
-    // }
-
     // Insert invoice
     const results = await database.insert(Invoices11)
         .values({
@@ -78,14 +75,24 @@ const [customer] = await database.insert(Customers)
         })
         .returning({
             id: Invoices11.id
-        });
+        })
 
-    if (!results.length) {
-        throw new Error("Failed to insert invoice");
-    }
+    // if (!results.length) {
+    //     throw new Error("Failed to insert invoice");
+    // }
+
+    const { data, error } = await resend.emails.send({
+      // from: 'Suyash Invoice <info@resend.dev>',
+      from: 'Suyash Invoice <info@suyashinvoice.online>',
+      // from: 'onboarding@resend.dev',
+      to: [email],
+      subject: 'Pay your New Invoice ',
+      react: InvoiceCreatedEmail({ invoiceId: results[0].id }),
+    });
 
     redirect(`/invoices/${results[0].id}`)
 }
+
 
 export async  function updateStatusAction(formdata: FormData){
     const { userId, orgId } = await auth();
@@ -144,6 +151,7 @@ export async  function deleteInvoiceAction(formdata: FormData){
             )
         )
         // redirect('/dashboard')
+        redirect("/dashboard?message=Invoice deleted successfully");
         
 }
  else {
@@ -161,105 +169,59 @@ export async  function deleteInvoiceAction(formdata: FormData){
    }
 
 
-// export async function createPayment(formData: FormData) {
-//   const HeadersList = headers();
-//   const origin = (await HeadersList).get('origin');
-  
-//     const id = parseInt(formData.get('id') as string);
-
-//    const [result] = await database.select({
-//     status: Invoices11.status,
-//     value: Invoices11.value,
-//    })
-//    .from(Invoices11)
-//    .where(eq(Invoices11.id, id))
-//    .limit(1)
-  
-//       // Create Checkout Sessions from body params.
-//       const session = await stripe.checkout.sessions.create({
-//         payment_method_types: ['card'],
-//         line_items: [
-//           {
-//             price_data: {
-//                 currency: 'INR',
-//                 product: 'prod_Rmv9IScIbTX1bZ',
-//                 unit_amount: result.value,
-//             },
-//             quantity: 1,
-//           },
-//         ],
-//         mode: 'payment',
-//         success_url: `${origin}/invoices/${id}/payment?status=success`,
-//         cancel_url: `${origin}/invoices/${id}/payment?status=canceled`,
-//       });
-
-// //    console.log('result', result)
-//      if ( !session.url ) {
-//         throw new Error('Invalid Session');
-//      }
-//      redirect (session.url);
-// }
-
-
-
 export async function createPayment(formData: FormData) {
-    const HeadersList = await headers();
-    const origin = HeadersList.get('origin');
+  const headersList =  await headers();
+  // const origin = headersList.get("origin");
+  const origin = headersList.get("origin") || "http://localhost:3000"; // Change to your actual domain in production
+  console.log("Origin:", origin);
+
   
-    // Ensure 'id' is present in the formData and is a valid number
-    const id = parseInt(formData.get('id') as string);
-    if (isNaN(id)) {
-      throw new Error('Invalid or missing invoice ID');
-    }
+    const id = parseInt(formData.get("id") as string);
+
+   const [result] = await database.select({
+    status: Invoices11.status,
+    value: Invoices11.value,
+   })
+   .from(Invoices11)
+   .where(eq(Invoices11.id, id))
+   .limit(1)
   
-    const [result] = await database.select({
-      status: Invoices11.status,
-      value: Invoices11.value,
-    })
-    .from(Invoices11)
-    .where(eq(Invoices11.id, id))
-    .limit(1);
-  
-    // Ensure result is not empty
-    if (!result) {
-      throw new Error('Invoice not found');
-    }
-  
-    // Create Checkout Sessions from body params.
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'INR',
-            product: 'prod_Rmv9IScIbTX1bZ', // This should be a valid product ID in your Stripe account
-            unit_amount: result.value,
+      // Create Checkout Sessions from body params.
+      const session = await stripe.checkout.sessions.create({
+        // payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+                currency: 'INR',
+                // product: 'prod_Rmv9IScIbTX1bZ',
+                product: 'prod_RoD0MV0hclO1LH',
+                unit_amount: result.value,
+            },
+            quantity: 1,
           },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: `${origin}/invoices/${id}/payment?status=success`,
-      cancel_url: `${origin}/invoices/${id}/payment?status=canceled`,
-    });
-  
-    // Check if the session URL is valid
-    if (!session.url) {
-      throw new Error('Invalid Session');
-    }
-  
-    // Redirect to the checkout session URL
-    redirect(session.url);
+        ],
+        mode: 'payment',
+        // success_url: `${origin}/invoices/${id}/payment?status=success`,
+        // cancel_url: `${origin}/invoices/${id}/payment?status=canceled`,
+        // success_url: `${origin}/payment-success`,
+        success_url: `${origin}/payment-success?id=${id}`,
+        // cancel_url: `${origin}/payment-canceled`,
+        cancel_url: `${origin}/invoices/${id}/payment?status=canceled`,
+        
+      });
+
+//    console.log('result', result)
+if (!session.url) {
+    throw new Error('Invalid Session');
   }
   
+  // Redirect user to Stripe checkout
+  redirect(session.url);
+  
+}
 
-//     const results = await database.delete(Invoices11)
-//      .where(
-//             and(
-//             eq(Invoices11.id, parseInt(id)),
-//             eq(Invoices11.userId, userId),
-//             )
-//         )
-//         redirect('/dashboard')
-        
-// }
+
+function setLoading(arg0: boolean) {
+    throw new Error('Function not implemented.');
+}
+

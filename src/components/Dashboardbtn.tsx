@@ -8,7 +8,7 @@ export default function DashboardBtn() {
   return (
     <button
       onClick={() => router.push("/dashboard")}
-      className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+      className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
     >
       Go to Dashboard
     </button>

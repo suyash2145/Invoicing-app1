@@ -12,3 +12,5 @@ export const database = drizzle(pool,{
         Customers
     }
 });
+
+export { Invoices11, Customers };

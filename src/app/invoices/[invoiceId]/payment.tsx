@@ -1,138 +1,191 @@
-// // "use client";
 
-// // import { useRouter } from "next/navigation";
-// // import { useState } from "react";
-// // import { Button } from "@/components/ui/button";
+"use client";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dailog"; // Fix typo from "dailog" to "dialog"
+import { eq, and, isNull } from "drizzle-orm";
 
-// // export default function PaymentPage({ params }) {
-// //   const { invoiceId } = params;
-// //   const router = useRouter();
-// //   const [loading, setLoading] = useState(false);
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-// //   async function handlePayment() {
-// //     setLoading(true);
-// //     try {
-// //       const response = await fetch("/api/create-payment", {
-// //         method: "POST",
-// //         body: JSON.stringify({ id: invoiceId }),
-// //         headers: { "Content-Type": "application/json" },
-// //       });
+import { Customers, Invoices11 } from "@/database/schema";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 
-// //       const { orderId, amount } = await response.json();
+import DashboardBtn from "@/components/Dashboardbtn";
+import Container from "@/components/Container";
 
-// //       const options = {
-// //         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Add in .env file
-// //         amount: amount * 100,
-// //         currency: "INR",
-// //         name: "Your Business",
-// //         description: `Payment for Invoice ${invoiceId}`,
-// //         order_id: orderId,
-// //         handler: function (response) {
-// //           alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
-// //           router.push(`/invoices/${invoiceId}`);
-// //         },
-// //         prefill: {
-// //           name: "Customer Name",
-// //           email: "customer@example.com",
-// //           contact: "9999999999",
-// //         },
-// //         theme: { color: "#3399cc" },
-// //       };
+import { Button } from "@/components/ui/button";
+import { AVAILABLE_STATUSES } from "@/data/invoices";
+import { deleteInvoiceAction, updateStatusAction } from "@/app/actions";
+import { Bomb, ChevronDown, CreditCard, Ellipsis, SquareCheckBig } from "lucide-react";
+import { auth } from "@clerk/nextjs/server";
+import { database } from "@/database";
+import { notFound, redirect, useParams} from "next/navigation";
+import { createStaticWorker } from "next/dist/build";
 
-// //       const rzp = new window.Razorpay(options);
-// //       rzp.open();
-// //     } catch (error) {
-// //       console.error("Payment Error:", error);
-// //       alert("Payment failed. Please try again.");
-// //     }
-// //     setLoading(false);
-// //   }
 
-// //   return (
-// //     <main className="w-full h-full">
-// //       <h1 className="text-3xl font-semibold">Payment for Invoice {invoiceId}</h1>
-// //       <Button className="mt-4" onClick={handlePayment} disabled={loading}>
-// //         {loading ? "Processing..." : "Pay Now"}
-// //       </Button>
-// //     </main>
-// //   );
-// // }
-
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+// import { CreditCard, SquareCheckBig } from "lucide-react";
+// import { Button } from "@/components/ui/button";
 
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+// import { useEffect, useState } from "react";
+// import { useParams, useRouter } from "next/navigation";
+// import { CreditCard, SquareCheckBig } from "lucide-react";
+// import { Button } from "@/components/ui/button";
 
-export default function PaymentPage() {
-  const { invoiceId } = useParams(); // Get the invoice ID from URL params
+export default function InvoicePage() {
+  const params = useParams();
   const router = useRouter();
+  const invoiceId = parseInt(params.invoiceId as string);
+
+  const [invoice, setInvoice] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
-  // Load Razorpay script dynamically
+  // Fetch invoice data from API
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    script.onload = () => setRazorpayLoaded(true);
-    document.body.appendChild(script);
-  }, []);
-
-  async function handlePayment() {
-    
-    if (!razorpayLoaded) {
-      alert("Razorpay SDK not loaded. Please try again.");
+    if (isNaN(invoiceId)) {
+      router.push("/404"); // Redirect to 404 if ID is invalid
       return;
     }
 
+    async function fetchInvoice() {
+      try {
+        const response = await fetch(`/api/invoices/${invoiceId}`);
+        const data = await response.json();
+
+        console.log("Fetched Invoice:", data); // Debugging
+
+        if (!data || !data.id) {
+          router.push("/404");
+          return;
+        }
+
+        setInvoice(data);
+      } catch (error) {
+        console.error("Error fetching invoice:", error);
+      }
+    }
+
+    fetchInvoice();
+  }, [invoiceId, router]);
+async function handlePayment() {
+    // if (!invoice || !razorpayLoaded) return;
     setLoading(true);
+  
     try {
-      const response = await fetch("/api/create-payment", {
+      const response = await fetch("/api/razorpay/create-order", {
         method: "POST",
-        body: JSON.stringify({ id: invoiceId }),
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ invoiceId: invoice.id, amount: invoice.value }),
       });
-
-      const { orderId, amount } = await response.json();
-
+  
+      const data = await response.json();
+      console.log("Razorpay API Response:", data); // Debugging step
+  
+      if (!data.orderId || !data.key) throw new Error("Invalid Razorpay response");
+  
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Add in .env file
-        amount: amount * 100,
+        key: data.key,
+        amount: invoice.value * 100, // Convert to paise
         currency: "INR",
-        name: "Your Business",
-        description: `Payment for Invoice ${invoiceId}`,
-        order_id: orderId,
-        handler: function (response: { razorpay_payment_id: string }) {
-          alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
-          router.push(`/invoices/${invoiceId}`);
+        name: "Your Company Name",
+        description: invoice.description,
+        order_id: data.orderId,
+        handler: async function (response: any) {
+          console.log("Payment Success:", response);
         },
         prefill: {
-          name: "Customer Name",
-          email: "customer@example.com",
-          contact: "9999999999",
+          name: invoice.Customer?.name,
         },
-        theme: { color: "#3399cc" },
       };
-
-      // const rzp = new window.Razorpay(options);
-      const rzp = new (window as any).Razorpay(options);
-      rzp.open();
+  
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.open();
     } catch (error) {
       console.error("Payment Error:", error);
-      alert("Payment failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  }
+  
+
+  // Ensure invoice is loaded before rendering
+  if (!invoice) {
+    return <p className="text-center text-lg">Loading invoice...</p>;
   }
 
   return (
     <main className="w-full h-full">
-      <h1 className="text-3xl font-semibold">Payment for Invoice {invoiceId}</h1>
-      <Button className="mt-4" onClick={handlePayment} disabled={loading || !razorpayLoaded}>
-        {loading ? "Processing..." : "Pay Now"}
-      </Button>
+      <div>
+        <h1 className="text-3xl font-semibold">
+          Invoice {invoice.id} <span className="badge">{invoice.status || "Unknown"}</span>
+        </h1>
+
+        <p className="text-3xl mb-3">Rs {invoice.value ? invoice.value.toFixed(2) : "0.00"}</p>
+
+        {invoice.status === "open" && (
+          <Button className="bg-green-700" onClick={handlePayment} disabled={loading}>
+            <CreditCard className="w-5 h-auto" />
+            {loading ? "Processing..." : "Pay Invoice"}
+          </Button>
+        )}
+
+        {invoice.status === "paid" && (
+          <p className="flex gap-2 items-center text-xl font-bold">
+            <SquareCheckBig className="w-8 h-auto bg-green-500 rounded-full text-white p-1" />
+            Invoice Paid
+          </p>
+        )}
+      </div>
     </main>
   );
 }
+
+
+
+
+
+
+
+
+//   import PaymentPage from "@/components/PaymentPage"; // Import the component
+// import { useRouter } from "next/navigation";
+
+
+
+// const PaymentWrapper = () => {
+//   const router = useRouter();
+//   // const invoiceId = router.query.invoiceId;
+//   const params = useParams();
+//   const invoiceId = params.invoiceId; 
+//   if (!invoiceId) return <p>Loading...</p>;
+
+//   return (
+//     <div>
+//       <h2>Make Payment for Invoice #{invoiceId}</h2>
+//       <PaymentPage invoiceId={parseInt(invoiceId as string)} />
+//     </div>
+//   );
+// };
+
+
+// export default PaymentWrapper;
+
+
+
 

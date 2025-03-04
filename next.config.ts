@@ -11,5 +11,8 @@ module.exports = {
   env: {
     RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
     RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
+    STRIPE_API_SECRET: process.env.STRIPE_API_SECRET
   },
 };
+
+

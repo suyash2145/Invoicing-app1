@@ -551,3 +551,4 @@ export default function InvoicePayment({ invoiceId }: { invoiceId: number }) {
     </Button>
   );
 }
+

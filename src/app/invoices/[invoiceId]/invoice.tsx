@@ -32,7 +32,7 @@ import Container from "@/components/Container";
 import { Button } from "@/components/ui/button";
 import { AVAILABLE_STATUSES } from "@/data/invoices";
 import { updateStatusAction, deleteInvoiceAction } from "@/app/actions";
-import { Bomb, ChevronDown, CreditCard, Ellipsis, IndianRupee, Pencil } from "lucide-react";
+import { Bomb, ChevronDown, CreditCard, Ellipsis, IndianRupee, Mail, Pencil } from "lucide-react";
 // import router from "next/router";
 import { useRouter } from "next/navigation";
 
@@ -65,9 +65,42 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
     }
 
 
+    const handleSendEmail = async () => {
+        if (!invoice.customer.email || !invoice.id) {
+            alert("Invoice email or ID is missing.");
+            return;
+        }
+    
+        const confirmed = confirm(`Send invoice email to ${invoice.customer.email}?`);
+        if (!confirmed) return;
+    
+        try {
+            const response = await fetch("/api/send-invoice", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: invoice.customer.email, invoiceId: invoice.id }),
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                alert("Mail sent successfully! ✅");
+            } else {
+                alert(`Error: ${data.error}`);
+            }
+        } catch (error) {
+            alert("An error occurred. Please try again.");
+        }
+    };
+    
+
+
+
+
+
   return (
       <main className="w-full h-full">
-        <Container>
+        <Container className="mt-12">
             <div className="flex justify-between mb-8">
         <h1 className="flex items-center gap-4 text-3xl font-semibold">
             Invoice { invoice.id }
@@ -138,20 +171,36 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
                     description: invoice.description,
                 },
             }}
-            className="w-full text-left block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+            className="flex items-center gap-2 w-full hover:bg-gray-100 cursor-pointer"
         >
             <Pencil className="w-4 h-auto"/>
             Edit Invoice
         </Link>
     </DropdownMenuItem>
 
-              {/* dialog */}
 
-              
-   {/* payment option */}
+    {/* <DropdownMenuItem asChild>
+
+    <div onClick={() => handleSendEmail()}>
+
+        <Mail className="w-4 h-auto" />
+        Send Email
+    </div>
+</DropdownMenuItem> */}
+
+{invoice.status !== "paid" && (
+  <DropdownMenuItem asChild>
+    <div onClick={() => handleSendEmail()} className="flex items-center gap-2">
+      <Mail className="w-4 h-auto" />
+      Send Email
+    </div>
+  </DropdownMenuItem>
+)}
+
+
 
    <DropdownMenuItem >
-                 <Link href={`/invoices/${invoice.id}/payment`}className="flex items-center gap-2"> 
+                 <Link href={`/invoices/${invoice.id}/payment`}className="flex items-center gap-2 "> 
                 <CreditCard className="w-4 h-auto"/>
                 Payment
                 </Link>
@@ -160,7 +209,7 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
 
 
 
-                     {/* delete invoice */}
+                    
                  <DropdownMenuItem >
                  <DialogTrigger asChild>
                  <button className="flex items-center gap-2"> 
@@ -168,9 +217,6 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
                 Delete Invoice
                 </button>
                  </DialogTrigger>
-                    {/* <form action={deleteInvoiceAction}>
-               <input type="hidden" name="id" value={invoice.id} />
-              </form> */}
              </DropdownMenuItem>
 
                               
@@ -179,7 +225,7 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
 
                 </DropdownMenu>
 
-  {/* <DialogTrigger>Open</DialogTrigger> */}
+  
   <DialogContent className="bg-white">
     <DialogHeader>
       <DialogTitle className="text-2xl">Delete Invoice?</DialogTitle>
@@ -227,7 +273,7 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
             <li className="flex gap-4">
                 <strong className="lock w-28 flex-shrink-0 font-medium text-sm">Invoice Date</strong>
                 <span>
-                { new Date(invoice.createTs).toLocaleDateString()}
+                { new Date(invoice.createTs).toLocaleDateString("en-US")}
                 </span>
             </li>
             <li className="flex gap-4">
