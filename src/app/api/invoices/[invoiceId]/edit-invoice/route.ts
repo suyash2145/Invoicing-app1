@@ -60,7 +60,7 @@ import { eq } from "drizzle-orm";
 interface RouteParams {
   params: { invoiceId: string };
 }
-
+// new type 
 export async function PUT(req: NextRequest, { params }: { params: { invoiceId: string } }) {
   try {
     const { invoiceId } = params;
@@ -116,4 +116,3 @@ export async function PUT(req: NextRequest, { params }: { params: { invoiceId: s
   }
 }
 
-// https://github.com/suyash2145/INV111
