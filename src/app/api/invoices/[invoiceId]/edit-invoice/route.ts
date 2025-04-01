@@ -61,7 +61,7 @@ interface RouteParams {
   params: { invoiceId: string };
 }
 
-export async function PUT(req: NextRequest, { params }: RouteParams) {
+export async function PUT(req: NextRequest, { params }: { params: { invoiceId: string } }) {
   try {
     const { invoiceId } = params;
 
@@ -115,3 +115,5 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: "⚠️ Internal server error" }, { status: 500 });
   }
 }
+
+// https://github.com/suyash2145/INV111
