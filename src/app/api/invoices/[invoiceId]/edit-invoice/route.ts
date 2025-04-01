@@ -2,14 +2,10 @@ import { NextResponse, NextRequest } from "next/server";
 import { database, Invoices11, Customers } from "@/database";
 import { eq } from "drizzle-orm";
 
-interface RouteParams {
-  params: { invoiceId: string };
-}
-
-// ✅ Correct API Route Function Signature
-export async function PUT(req: NextRequest, { params }: RouteParams) {
+// Correctly define the API route handler function
+export async function PUT(req: NextRequest, context: { params: { invoiceId: string } }) {
   try {
-    const { invoiceId } = params;
+    const { invoiceId } = context.params; // Corrected way to extract `invoiceId`
 
     if (!invoiceId) {
       return NextResponse.json({ error: "Invoice ID is required" }, { status: 400 });
