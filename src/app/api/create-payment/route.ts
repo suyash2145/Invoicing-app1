@@ -1,8 +1,6 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
 
-// Ensure environment variables are present
 if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
   throw new Error("Razorpay keys are missing from environment variables.");
 }

@@ -45,7 +45,6 @@ if (  isSuccess ) {
   formData.append('status', 'paid')
   await updateStatusAction(formData);
 
-  // redirect(`/invoices/${invoiceId}`);
 }
    
   const [result] = await database.select({

@@ -7,12 +7,6 @@ const isPublic = createRouteMatcher([
   '/invoices/(.*)/payment'
 ])
 
-// const isProtectedRoute= createRouteMatcher([
-//   '/dashboard',
-//   '/invoices/:invoiceId',
-//   '/invoices/new'
-// ])
-
 export default clerkMiddleware(async (auth, req) => {
   if (! isPublic(req)) await auth.protect()
 })

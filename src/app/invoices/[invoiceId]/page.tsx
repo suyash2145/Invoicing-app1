@@ -5,7 +5,6 @@ import { auth } from "@clerk/nextjs/server";
 import { database } from '@/database';
 import { Customers, Invoices11 } from '@/database/schema';
 import Invoice from "./invoice";
-import { Button } from "@/components/ui/button";
 
 export default async function InvoicePage({ params }: { params: { invoiceId: string } }) {
     const { userId, orgId } = await auth();
@@ -56,24 +55,9 @@ export default async function InvoicePage({ params }: { params: { invoiceId: str
         customer: result.customers
     };
 
-    // Delete Invoice Function
-    async function handleDelete() {
-        "use server"; // Ensure it's a server function
-        await database.delete(Invoices11).where(eq(Invoices11.id, invoiceId));
-        console.log("Invoice deleted:", invoiceId);
-        // Redirect manually if needed after deletion
-    }
-
     return (
         <div>
             <Invoice invoice={invoice} />
-            
-            {/* Delete Button */}
-            <div className="mt-4">
-                <Button onClick={handleDelete} variant="destructive">
-                    Delete Invoice
-                </Button>
-            </div>
         </div>
     );
 }

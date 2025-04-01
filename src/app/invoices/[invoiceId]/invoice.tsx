@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dailog"
 
-
 import { useOptimistic } from "react";
 import {
     DropdownMenu,
@@ -45,7 +44,6 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
    }
    )
    
-
    const router = useRouter();
     async function hamdleOnUpdateStatus(formData: FormData){
         const originalStatus = currentStatus;
@@ -178,7 +176,7 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
 
 {invoice.status !== "paid" && (
   <DropdownMenuItem asChild>
-    <div onClick={() => handleSendEmail()} className="flex items-center gap-2">
+    <div onClick={() => handleSendEmail()} className="flex items-center gap-2 w-full hover:bg-gray-100 cursor-pointer">
       <Mail className="w-4 h-auto" />
       Send Email
     </div>
