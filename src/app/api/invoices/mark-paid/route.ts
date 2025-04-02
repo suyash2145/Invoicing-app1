@@ -22,4 +22,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Failed to update invoice" }, { status: 500 });
   }
 }
-

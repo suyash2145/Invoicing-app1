@@ -105,7 +105,6 @@ export default function InvoicePage( { invoice }: InvoiceProps) {
         </h1>
             <DashboardBtn />
         
-
                         <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button className="flex items-center gap-2" variant="outline">
