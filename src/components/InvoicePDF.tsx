@@ -14,7 +14,7 @@ interface Invoice {
 }
 
 const COMPANY_DETAILS = {
-  name: "Your Company Name",
+  name: "YellowPlum",
   address: "123 Business Street, City, Country",
   phone: "+91 98765 43210",
   email: "info@yourcompany.com",

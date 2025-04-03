@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/invoices/[invoiceId]/edit-invoice/route.ts", "src/app/api/invoices/[invoiceId]/pdf/route.ts", "src/app/api/invoices/[invoiceId]/route.ts", "src/app/api/invoices/mark-paid/route.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/invoices/[invoiceId]/edit-invoice/route.js", "src/app/api/invoices/[invoiceId]/pdf/route.js", "src/app/api/invoices/[invoiceId]/route.js", "src/app/api/invoices/mark-paid/route.js", "src/app/api/send-invoice/route.js", "src/app/api/summary/route.js"],
   "exclude": ["node_modules"]
 }

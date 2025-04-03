@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { database, Invoices11 } from "@/database";
 import { eq } from "drizzle-orm";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req, {params}) {
   try {
     const { id } = params;
     const invoiceId = parseInt(id);
@@ -25,7 +25,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
 
     return NextResponse.json(invoice[0]); // Return first matching invoice
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("Error fetching invoice:", error);
     return NextResponse.json({ error: "Failed to fetch invoice" }, { status: 500 });
   }
