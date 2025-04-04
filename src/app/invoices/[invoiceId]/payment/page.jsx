@@ -526,14 +526,14 @@ export default async function InvoicePage({ params, searchParams }) {
                     <div>
                         <h2 className="text-xl font-bold mb-4">Manage Invoice</h2>
                         {invoice.status === "open" && (
-                            <form action={createPayment}>
-                                <input type="hidden" name="id" value={invoice.id} />
-                                <Button className="flex gap-2 font-semibold bg-green-700">
-                                    <CreditCard className="w-5 h-auto" />
-                                    Invoice Payment
-                                </Button>
-                            </form>
-                            // <PayButton invoiceId={invoice.id} />
+                            // <form action={createPayment}>
+                            //     <input type="hidden" name="id" value={invoice.id} />
+                            //     <Button className="flex gap-2 font-semibold bg-green-700">
+                            //         <CreditCard className="w-5 h-auto" />
+                            //         Invoice Payment
+                            //     </Button>
+                            // </form>
+                             <PayButton invoiceId={invoice.id} />
                         )}
                         {invoice.status === "paid" && (
                             <div className="flex justify-between items-center">

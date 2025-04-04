@@ -84,10 +84,15 @@ const Header: React.FC = () => {
                 </Link>
               )}
             </p>
-            <span className="text-gray-300">/</span>
+            <span className="text-white">/</span>
             <SignedIn>
               <span className="-ml-2">
-                <OrganizationSwitcher afterCreateOrganizationUrl="/dashboard" />
+                <OrganizationSwitcher afterCreateOrganizationUrl="/dashboard" 
+                appearance={{
+                  elements: {
+                    organizationSwitcherTrigger: "text-white hover:text-gray-200",
+                  },
+                }}/>
               </span>
             </SignedIn>
           </div>

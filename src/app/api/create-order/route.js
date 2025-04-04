@@ -87,7 +87,7 @@ export async function POST(req) {
     const amount = invoice.value * 100; // Convert to paise
 
     const options = {
-      amount,
+      amount : amount/100,
       currency: "INR",
       receipt: `invoice_${invoiceId}`,
       payment_capture: 1,

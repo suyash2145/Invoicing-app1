@@ -186,8 +186,14 @@ export default function InvoicePDF({ invoice }) {
             <Text>Rs {subtotal.toFixed(2)}</Text>
           </View>
           <View style={styles.summaryRow}>
-            <Text style={styles.label}>Tax (0%):</Text>
-            <Text>Rs {tax.toFixed(2)}</Text>
+            <Text style={styles.label}>Tax (10%):</Text>
+            {/* <Text>Rs {subtotal.toFixed(2)}</Text> */}
+            <Text>Rs {(subtotal * 0.05).toFixed(2)} </Text>
+          </View>
+          <View style={styles.summaryRow}>
+            <Text style={styles.label}>Discount:</Text>
+            {/* <Text>Rs {subtotal.toFixed(2)}</Text> */}
+            <Text>- Rs {(subtotal * 0.05).toFixed(2)} </Text>
           </View>
           <View style={[styles.summaryRow, { borderTop: "1px solid #000", paddingTop: 5 }]}>
             <Text style={styles.label}>Total:</Text>
