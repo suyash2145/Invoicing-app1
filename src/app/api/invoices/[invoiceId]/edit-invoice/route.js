@@ -166,6 +166,8 @@ export async function PUT(req, { params }) {
         await database
             .update(Invoices11)
             .set({ 
+                name,
+                email,
                 value: Number(value) * 100,
                 description, 
                 phone 

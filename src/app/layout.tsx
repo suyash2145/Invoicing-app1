@@ -179,7 +179,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Invoicing App",
     description: "Easily manage and track your invoices with our invoicing app.",
-    url: "https://yourdomain.com", // Replace with your actual domain
+    url: "https://invoicing-application-model.vercel.app", // Replace with your actual domain
     siteName: "Invoicing App",
     images: [
       {
@@ -213,7 +213,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 "@context": "https://schema.org",
                 "@type": "WebApplication",
                 name: "Invoicing App",
-                url: "https://yourdomain.com",
+                url: "https://invoicing-application-model.vercel.app",
                 description: "Easily manage and track your invoices with our invoicing app.",
                 image: "/og-image.png",
               }),

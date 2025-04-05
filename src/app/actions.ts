@@ -11,6 +11,7 @@ import { Resend } from 'resend';
 import InvoiceCreatedEmail from '@/emails/invoice-created';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
+import axios from "axios";
 
 const stripe = new Stripe(String(process.env.STRIPE_API_SECRET!));
 const resend = new Resend(process.env.RESEND_API_KEY!);
@@ -104,3 +105,68 @@ export async function createPayment(formData: FormData) {
     
     redirect(session.url);
 }
+
+
+export async function refundInvoiceAction(formData: FormData) {
+    const invoiceId = formData.get("id") as string;
+    const paymentId = formData.get("paymentId") as string;
+  
+    if (!invoiceId || !paymentId) {
+      return { success: false, message: "Invalid invoice or payment ID." };
+    }
+  
+    try {
+      // 🔹 Step 1: Call Razorpay Refund API
+      const res = await axios.post(
+        `https://api.razorpay.com/v1/payments/${paymentId}/refund`,
+        {},
+        {
+          auth: {
+            username: process.env.RAZORPAY_KEY_ID!,
+            password: process.env.RAZORPAY_KEY_SECRET!,
+          },
+        }
+      );
+  
+      console.log("✅ Refund Successful:", res.data);
+  
+      // 🔹 Step 2: Update Invoice Status in DB
+      await database
+        .update(Invoices11)
+        .set({ status: "void" })
+        .where(eq(Invoices11.id, Number(invoiceId)));
+  
+      // Refresh the invoices page after the refund
+      revalidatePath("/invoices");
+  
+      return { success: true, message: "Refund successful. Invoice marked as void." };
+    } catch (error) {
+      console.error("❌ Refund Failed:", error);
+      return { success: false, message: "Refund failed." };
+    }
+  }
+
+  export async function updateStatusToVoidAction(formData: FormData) {
+    const { userId, orgId } = await auth();
+    if (!userId) return;
+  
+    const id = formData.get("id") as string;
+    const status = formData.get("status") as Status;
+  
+    if (!id || status !== "void") return;
+  
+    await database
+      .update(Invoices11)
+      .set({ status: "void" })
+      .where(
+        orgId
+          ? and(eq(Invoices11.id, parseInt(id)), eq(Invoices11.OrganizationId, orgId))
+          : and(eq(Invoices11.id, parseInt(id)), eq(Invoices11.userId, userId), isNull(Invoices11.OrganizationId))
+      );
+    
+      
+    revalidatePath(`/invoices/${id}`, 'page');
+    
+    
+  }
+  

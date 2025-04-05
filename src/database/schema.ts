@@ -36,6 +36,14 @@ export const Customers = pgTable('customers', {
   OrganizationId: text('OrganizationId')
 });
 
+// export const Refund = pgTable('refund', {
+//   id: integer('id').primaryKey().notNull(), 
+//   createTs: timestamp('createTs').defaultNow().notNull(),
+//   order_id: text('order_id'),  // Reference the invoice/order
+//   value: integer('amount').notNull(),   // Refund amount
+//   status: statusEnum('status').notNull(), // Use the existing status enum
+//   userId: text('userId').notNull(),
+// });
 
  
 

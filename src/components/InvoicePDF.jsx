@@ -114,9 +114,9 @@ import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/render
 
 const COMPANY_DETAILS = {
   name: "YellowPlum",
-  address: "123 Business Street, City, Country",
-  phone: "+91 98765 43210",
-  email: "info@yourcompany.com",
+  address: "123 Business Street, Pune, India",
+  phone: "+91 9011585709",
+  email: "info@yellowplum.com",
   logo: "/plum.png",
 };
 
@@ -188,12 +188,12 @@ export default function InvoicePDF({ invoice }) {
           <View style={styles.summaryRow}>
             <Text style={styles.label}>Tax (10%):</Text>
             {/* <Text>Rs {subtotal.toFixed(2)}</Text> */}
-            <Text>Rs {(subtotal * 0.05).toFixed(2)} </Text>
+            <Text>Rs {(subtotal * 0.1).toFixed(2)} </Text>
           </View>
           <View style={styles.summaryRow}>
             <Text style={styles.label}>Discount:</Text>
             {/* <Text>Rs {subtotal.toFixed(2)}</Text> */}
-            <Text>- Rs {(subtotal * 0.05).toFixed(2)} </Text>
+            <Text>- Rs {(subtotal * 0.1).toFixed(2)} </Text>
           </View>
           <View style={[styles.summaryRow, { borderTop: "1px solid #000", paddingTop: 5 }]}>
             <Text style={styles.label}>Total:</Text>
