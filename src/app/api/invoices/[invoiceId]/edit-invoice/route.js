@@ -185,7 +185,7 @@ export async function PUT(req, { params }) {
         }
 
         // Revalidate the path to update the cached data
-        revalidatePath(`/invoices/${invoiceId}`);
+        revalidatePath(`/invoices/${invoiceId}`, 'page');
 
         // Return a success response
         return NextResponse.json({ 
