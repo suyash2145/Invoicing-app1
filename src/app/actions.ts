@@ -60,7 +60,8 @@ export async function updateStatusAction(formData: FormData) {
         .where(orgId ? and(eq(Invoices11.id, parseInt(id)), eq(Invoices11.OrganizationId, orgId))
                      : and(eq(Invoices11.id, parseInt(id)), eq(Invoices11.userId, userId), isNull(Invoices11.OrganizationId)));
     
-    revalidatePath(`/invoices/${id}`, 'page');
+    // revalidatePath(`/invoices/${id}`, 'page');
+    redirect(`/invoices/${id}`);
 }
 
 export async function deleteInvoiceAction(formData: FormData) {
