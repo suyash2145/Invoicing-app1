@@ -239,6 +239,7 @@ import { database } from "@/database";
 import { notFound } from "next/navigation";
 import ViewPDFButton from "@/components/ViewPDFButton";
 import  PayButton  from "@/components/PayButton";
+import ChatBox from "@/components/ChatBox"
 
 
 async function initiateRazorpay(invoiceId, amount) {
@@ -459,9 +460,18 @@ export default async function InvoicePage({ params, searchParams }) {
             </p>
             <ViewPDFButton invoiceId={String(invoice.id)} />
           </div>
+        
+          
         )}
       </div>
     </div>
+
+    <div>
+      {/* <ChatBox />  */}
+      <ChatBox invoiceId={invoiceId} />
+    </div>
+    
+
 
     {/* Billing Details */}
     <div className="mt-10">

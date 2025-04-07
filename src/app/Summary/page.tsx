@@ -562,6 +562,292 @@
 // }
 
 
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import {
+//   PieChart,
+//   Pie,
+//   Cell,
+//   ResponsiveContainer,
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   Legend,
+// } from "recharts";
+
+// export default function SummaryPage() {
+//   const [summary, setSummary] = useState({
+//     totalInvoices: 0,
+//     totalAmount: 0,
+//     totalPaidAmount: 0,
+//     remainingAmount: 0,
+//     totalUncollectibleAmount: 0,
+//     totalVoidAmount: 0, // ✅ Refund Amount
+//     monthlyChartData: [], // in case you use it later
+//   });
+
+//   useEffect(() => {
+//     async function fetchSummary() {
+//       try {
+//         const res = await fetch("/api/summary");
+//         if (!res.ok) throw new Error("Failed to fetch data");
+
+//         const data = await res.json();
+//         setSummary(data);
+//       } catch (error) {
+//         console.error("Error fetching summary:", error);
+//       }
+//     }
+
+//     fetchSummary();
+//   }, []);
+
+//   // ✅ Prepare pie chart data including Refund (Void)
+//   const pieData = [
+//     { name: "Paid", value: summary.totalPaidAmount / 100 },
+//     { name: "Remaining", value: summary.remainingAmount / 100 },
+//     { name: "Loss", value: summary.totalUncollectibleAmount / 100 },
+//     { name: "Refund (Void)", value: summary.totalVoidAmount / 100 },
+//   ];
+
+//   const barData = [{ name: "Invoices", total: summary.totalInvoices }];
+
+//   const COLORS = ["#10B981", "#EF4444", "#F59E0B", "#8B5CF6"]; // Green, Red, Yellow, Purple
+
+//   return (
+//     <main className="w-full h-full">
+//       <div className="max-w-5xl mx-auto p-6 bg-white rounded-lg shadow-md">
+//         <h1 className="text-2xl font-bold mb-4">Invoice Summary</h1>
+
+//         {/* ✅ Summary Grid */}
+//         <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+//           <div className="bg-blue-500 text-white p-4 rounded-lg">
+//             <h2 className="text-lg font-semibold">Total Invoices</h2>
+//             <p className="text-2xl">{summary.totalInvoices}</p>
+//           </div>
+
+//           <div className="bg-gray-600 text-white p-4 rounded-lg">
+//             <h2 className="text-lg font-semibold">Total Amount</h2>
+//             <p className="text-2xl">Rs {(summary.totalAmount / 100).toFixed(2)}</p>
+//           </div>
+
+//           <div className="bg-green-500 text-white p-4 rounded-lg">
+//             <h2 className="text-lg font-semibold">Total Paid</h2>
+//             <p className="text-2xl">Rs {(summary.totalPaidAmount / 100).toFixed(2)}</p>
+//           </div>
+
+//           <div className="bg-red-500 text-white p-4 rounded-lg">
+//             <h2 className="text-lg font-semibold">Remaining</h2>
+//             <p className="text-2xl">Rs {(summary.remainingAmount / 100).toFixed(2)}</p>
+//           </div>
+
+//           <div className="bg-yellow-500 text-white p-4 rounded-lg">
+//             <h2 className="text-lg font-semibold">Uncollectible</h2>
+//             <p className="text-2xl">Rs {(summary.totalUncollectibleAmount / 100).toFixed(2)}</p>
+//           </div>
+
+//           <div className="bg-purple-500 text-white p-4 rounded-lg">
+//             <h2 className="text-lg font-semibold">Refund (Void)</h2>
+//             <p className="text-2xl">Rs {(summary.totalVoidAmount / 100).toFixed(2)}</p>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* ✅ Charts Section */}
+//       <div className="max-w-4xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-md">
+//         <h2 className="text-xl font-semibold mb-4 text-center">Invoice Data Visualization</h2>
+
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//           {/* ✅ Pie Chart */}
+//           <div className="flex flex-col items-center">
+//             <h3 className="text-lg font-medium mb-2">Paid vs Remaining vs Loss vs Refund</h3>
+//             <ResponsiveContainer width="100%" height={300}>
+//               <PieChart>
+//                 <Pie
+//                   data={pieData}
+//                   cx="50%"
+//                   cy="50%"
+//                   outerRadius={100}
+//                   fill="#8884d8"
+//                   dataKey="value"
+//                   label={({ name }) => name}
+//                 >
+//                   {pieData.map((_, index) => (
+//                     <Cell key={`cell-${index}`} fill={COLORS[index]} />
+//                   ))}
+//                 </Pie>
+//                 <Tooltip formatter={(value) => (typeof value === "number" ? `Rs ${value.toFixed(2)}` : "Rs 0.00")} />
+//               </PieChart>
+//             </ResponsiveContainer>
+//           </div>
+
+//           {/* ✅ Bar Chart */}
+          
+//           <div className="flex flex-col items-center">
+//             <h3 className="text-lg font-medium mb-2">Total Invoices</h3>
+//             <ResponsiveContainer width="100%" height={300}>
+//               <BarChart data={barData}>
+//                 <XAxis dataKey="name" />
+//                 <YAxis />
+//                 <Tooltip />
+//                 <Legend />
+//                 <Bar dataKey="total" fill="#3B82F6" />
+//               </BarChart>
+//             </ResponsiveContainer>
+//           </div>
+//         </div>
+//       </div>
+//     </main>
+//   );
+// }
+
+
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import {
+//   PieChart,
+//   Pie,
+//   Cell,
+//   ResponsiveContainer,
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   Legend,
+// } from "recharts";
+
+// // ✅ TypeScript interface for summary API response
+// interface InvoiceSummary {
+//   totalInvoices: number;
+//   totalAmount: number;
+//   totalPaidAmount: number;
+//   remainingAmount: number;
+//   totalUncollectibleAmount: number;
+//   totalVoidAmount: number;
+//   invoiceBreakdown: {
+//     name: string;
+//     count: number;
+//   }[];
+// }
+
+// export default function SummaryPage() {
+//   const [summary, setSummary] = useState<InvoiceSummary>({
+//     totalInvoices: 0,
+//     totalAmount: 0,
+//     totalPaidAmount: 0,
+//     remainingAmount: 0,
+//     totalUncollectibleAmount: 0,
+//     totalVoidAmount: 0,
+//     invoiceBreakdown: [],
+//   });
+
+//   useEffect(() => {
+//     async function fetchSummary() {
+//       try {
+//         const res = await fetch("/api/summary");
+//         if (!res.ok) throw new Error("Failed to fetch data");
+
+//         const data = await res.json();
+//         setSummary(data);
+//       } catch (error) {
+//         console.error("Error fetching summary:", error);
+//       }
+//     }
+
+//     fetchSummary();
+//   }, []);
+
+//   // ✅ Pie chart data
+//   const pieData = [
+//     { name: "Paid", value: summary.totalPaidAmount / 100 },
+//     { name: "Remaining", value: summary.remainingAmount / 100 },
+//     { name: "Loss", value: summary.totalUncollectibleAmount / 100 },
+//     { name: "Refund (Void)", value: summary.totalVoidAmount / 100 },
+//   ];
+
+//   // const COLORS = ["#10B981", "#EF4444", "#F59E0B", "#8B5CF6"];
+//   const COLORS = ["#10B981", "#F59E0B", "#EF4444", "#9CA3AF"];
+
+
+//   return (
+//     <main className="w-full h-full">
+//       <div className="max-w-5xl mx-auto p-6 bg-white rounded-lg shadow-md">
+//         <h1 className="text-2xl font-bold mb-4">Invoice Summary</h1>
+
+//         {/* ✅ Summary Grid */}
+//         <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+//           <SummaryCard title="Total Invoices" value={summary.totalInvoices.toString()} bg="bg-blue-500" />
+//           <SummaryCard title="Total Amount" value={`Rs ${(summary.totalAmount / 100).toFixed(2)}`} bg="bg-gray-600" />
+//           <SummaryCard title="Total Paid" value={`Rs ${(summary.totalPaidAmount / 100).toFixed(2)}`} bg="bg-green-500" />
+//           <SummaryCard title="Remaining" value={`Rs ${(summary.remainingAmount / 100).toFixed(2)}`} bg="bg-red-500" />
+//           <SummaryCard title="Uncollectible" value={`Rs ${(summary.totalUncollectibleAmount / 100).toFixed(2)}`} bg="bg-yellow-500" />
+//           <SummaryCard title="Refund (Void)" value={`Rs ${(summary.totalVoidAmount / 100).toFixed(2)}`} bg="bg-purple-500" />
+//         </div>
+//       </div>
+
+//       {/* ✅ Charts Section */}
+//       <div className="max-w-4xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-md">
+//         <h2 className="text-xl font-semibold mb-4 text-center">Invoice Data Visualization</h2>
+
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//           {/* ✅ Pie Chart */}
+//           <div className="flex flex-col items-center">
+//             <h3 className="text-lg font-medium mb-2">Paid vs Remaining vs Loss vs Refund</h3>
+//             <ResponsiveContainer width="100%" height={300}>
+//               <PieChart>
+//                 <Pie
+//                   data={pieData}
+//                   cx="50%"
+//                   cy="50%"
+//                   outerRadius={100}
+//                   fill="#8884d8"
+//                   dataKey="value"
+//                   label={({ name }) => name}
+//                 >
+//                   {pieData.map((_, index) => (
+//                     <Cell key={`cell-${index}`} fill={COLORS[index]} />
+//                   ))}
+//                 </Pie>
+//                 <Tooltip formatter={(value) => `Rs ${(value as number).toFixed(2)}`} />
+//               </PieChart>
+//             </ResponsiveContainer>
+//           </div>
+
+//           {/* ✅ Bar Chart: Invoice Status Breakdown */}
+//           <div className="flex flex-col items-center">
+//             <h3 className="text-lg font-medium mb-2">Invoice Count by Status</h3>
+//             <ResponsiveContainer width="100%" height={300}>
+//               <BarChart data={summary.invoiceBreakdown}>
+//                 <XAxis dataKey="name" />
+//                 <YAxis allowDecimals={false} />
+//                 <Tooltip />
+//                 <Legend />
+//                 <Bar dataKey="count" fill="#3B82F6" name="Invoices" />
+//               </BarChart>
+//             </ResponsiveContainer>
+//           </div>
+//         </div>
+//       </div>
+//     </main>
+//   );
+// }
+
+// // ✅ Reusable Card Component
+// function SummaryCard({ title, value, bg }: { title: string; value: string; bg: string }) {
+//   return (
+//     <div className={`${bg} text-white p-4 rounded-lg`}>
+//       <h2 className="text-sm font-medium">{title}</h2>
+//       <p className="text-xl font-bold">{value}</p>
+//     </div>
+//   );
+// }
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -578,15 +864,39 @@ import {
   Legend,
 } from "recharts";
 
+// ✅ TypeScript interface for summary API response
+interface InvoiceSummary {
+  totalInvoices: number;
+  totalAmount: number;
+  totalPaidAmount: number;
+  remainingAmount: number;
+  totalUncollectibleAmount: number;
+  totalVoidAmount: number;
+  invoiceBreakdown: {
+    name: string;
+    count: number;
+  }[];
+}
+
+// ✅ Color mapping
+const PIE_COLORS = ["#10B981", "#F59E0B", "#EF4444", "#9CA3AF"];
+
+const BAR_COLORS: Record<string, string> = {
+  Paid: "#10B981",
+  Unpaid: "#F59E0B",
+  Uncollectible: "#EF4444",
+  Void: "#9CA3AF",
+};
+
 export default function SummaryPage() {
-  const [summary, setSummary] = useState({
+  const [summary, setSummary] = useState<InvoiceSummary>({
     totalInvoices: 0,
     totalAmount: 0,
     totalPaidAmount: 0,
     remainingAmount: 0,
     totalUncollectibleAmount: 0,
-    totalVoidAmount: 0, // ✅ Refund Amount
-    monthlyChartData: [], // in case you use it later
+    totalVoidAmount: 0,
+    invoiceBreakdown: [],
   });
 
   useEffect(() => {
@@ -594,7 +904,6 @@ export default function SummaryPage() {
       try {
         const res = await fetch("/api/summary");
         if (!res.ok) throw new Error("Failed to fetch data");
-
         const data = await res.json();
         setSummary(data);
       } catch (error) {
@@ -605,17 +914,13 @@ export default function SummaryPage() {
     fetchSummary();
   }, []);
 
-  // ✅ Prepare pie chart data including Refund (Void)
+  // ✅ Pie chart data
   const pieData = [
     { name: "Paid", value: summary.totalPaidAmount / 100 },
     { name: "Remaining", value: summary.remainingAmount / 100 },
     { name: "Loss", value: summary.totalUncollectibleAmount / 100 },
     { name: "Refund (Void)", value: summary.totalVoidAmount / 100 },
   ];
-
-  const barData = [{ name: "Invoices", total: summary.totalInvoices }];
-
-  const COLORS = ["#10B981", "#EF4444", "#F59E0B", "#8B5CF6"]; // Green, Red, Yellow, Purple
 
   return (
     <main className="w-full h-full">
@@ -624,35 +929,12 @@ export default function SummaryPage() {
 
         {/* ✅ Summary Grid */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-          <div className="bg-blue-500 text-white p-4 rounded-lg">
-            <h2 className="text-lg font-semibold">Total Invoices</h2>
-            <p className="text-2xl">{summary.totalInvoices}</p>
-          </div>
-
-          <div className="bg-gray-600 text-white p-4 rounded-lg">
-            <h2 className="text-lg font-semibold">Total Amount</h2>
-            <p className="text-2xl">Rs {(summary.totalAmount / 100).toFixed(2)}</p>
-          </div>
-
-          <div className="bg-green-500 text-white p-4 rounded-lg">
-            <h2 className="text-lg font-semibold">Total Paid</h2>
-            <p className="text-2xl">Rs {(summary.totalPaidAmount / 100).toFixed(2)}</p>
-          </div>
-
-          <div className="bg-red-500 text-white p-4 rounded-lg">
-            <h2 className="text-lg font-semibold">Remaining</h2>
-            <p className="text-2xl">Rs {(summary.remainingAmount / 100).toFixed(2)}</p>
-          </div>
-
-          <div className="bg-yellow-500 text-white p-4 rounded-lg">
-            <h2 className="text-lg font-semibold">Uncollectible</h2>
-            <p className="text-2xl">Rs {(summary.totalUncollectibleAmount / 100).toFixed(2)}</p>
-          </div>
-
-          <div className="bg-purple-500 text-white p-4 rounded-lg">
-            <h2 className="text-lg font-semibold">Refund (Void)</h2>
-            <p className="text-2xl">Rs {(summary.totalVoidAmount / 100).toFixed(2)}</p>
-          </div>
+          <SummaryCard title="Total Invoices" value={summary.totalInvoices.toString()} bg="bg-blue-500" />
+          <SummaryCard title="Total Amount" value={`Rs ${(summary.totalAmount / 100).toFixed(2)}`} bg="bg-gray-600" />
+          <SummaryCard title="Total Paid" value={`Rs ${(summary.totalPaidAmount / 100).toFixed(2)}`} bg="bg-green-500" />
+          <SummaryCard title="Remaining" value={`Rs ${(summary.remainingAmount / 100).toFixed(2)}`} bg="bg-red-500" />
+          <SummaryCard title="Uncollectible" value={`Rs ${(summary.totalUncollectibleAmount / 100).toFixed(2)}`} bg="bg-yellow-500" />
+          <SummaryCard title="Refund (Void)" value={`Rs ${(summary.totalVoidAmount / 100).toFixed(2)}`} bg="bg-purple-500" />
         </div>
       </div>
 
@@ -676,29 +958,43 @@ export default function SummaryPage() {
                   label={({ name }) => name}
                 >
                   {pieData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                    <Cell key={`cell-${index}`} fill={PIE_COLORS[index]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => (typeof value === "number" ? `Rs ${value.toFixed(2)}` : "Rs 0.00")} />
+                <Tooltip formatter={(value) => `Rs ${(value as number).toFixed(2)}`} />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          {/* ✅ Bar Chart */}
+          {/* ✅ Bar Chart with Custom Colors */}
           <div className="flex flex-col items-center">
-            <h3 className="text-lg font-medium mb-2">Total Invoices</h3>
+            <h3 className="text-lg font-medium mb-2">Invoice Count by Status</h3>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={barData}>
+              <BarChart data={summary.invoiceBreakdown}>
                 <XAxis dataKey="name" />
-                <YAxis />
+                <YAxis allowDecimals={false} />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="total" fill="#3B82F6" />
+                <Bar dataKey="count" name="Invoices">
+                  {summary.invoiceBreakdown.map((entry, index) => (
+                    <Cell key={`bar-cell-${index}`} fill={BAR_COLORS[entry.name] || "#3B82F6"} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
     </main>
+  );
+}
+
+// ✅ Reusable Summary Card
+function SummaryCard({ title, value, bg }: { title: string; value: string; bg: string }) {
+  return (
+    <div className={`${bg} text-white p-4 rounded-lg`}>
+      <h2 className="text-sm font-medium">{title}</h2>
+      <p className="text-xl font-bold">{value}</p>
+    </div>
   );
 }
