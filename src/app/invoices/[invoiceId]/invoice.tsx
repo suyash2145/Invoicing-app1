@@ -508,6 +508,8 @@ return (
             </Dialog>
           </div>
         </div>
+
+        
   
         <p className="text-2xl md:text-3xl mb-3">
           Rs {(invoice.value / 100).toFixed(2)}

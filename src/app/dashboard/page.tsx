@@ -137,6 +137,7 @@ import Container from "@/components/Container";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { eq, and, isNull } from "drizzle-orm";
+import ChatDash from "@/components/ChatDash.jsx";
 
 export default async function Home() {
   const { userId, orgId } = await auth();
@@ -163,7 +164,9 @@ export default async function Home() {
   }));
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-900 via-gray-900 to-black text-white py-8 px-4 sm:px-6 lg:px-8">
+   
+  <main className="min-h-screen bg-gradient-to-br from-blue-900 via-gray-900 to-black text-white py-8 px-4 sm:px-6 lg:px-8">
+  
       <Container>
         {/* Header and Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -190,6 +193,11 @@ export default async function Home() {
             </Button>
           </div>
         </div>
+
+        {/* <ChatDash /> */}
+        <ChatDash orgId={orgId} />
+
+
 
         {/* Table Section */}
         <div className="overflow-x-auto rounded-lg shadow-xl bg-white bg-opacity-10 backdrop-blur-md">
@@ -253,6 +261,7 @@ export default async function Home() {
           </Table>
         </div>
       </Container>
+      
     </main>
   );
 }
