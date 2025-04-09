@@ -269,7 +269,7 @@ export async function POST(req) {
       reply = `📊 Total invoices: ${total}`;
     } else if (lowerQ.includes("paid")) {
       reply = `✅ Paid invoices: ${paid}`;
-    } else if (lowerQ.includes("unpaid")) {
+    } else if (lowerQ.includes("unpay")) {
       reply = `🕗 Unpaid invoices: ${unpaid}`;
     } else if (lowerQ.includes("void")) {
       reply = `🚫 Voided invoices: ${voided}`;
