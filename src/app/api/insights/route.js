@@ -245,7 +245,7 @@ export async function POST(req) {
 
     const total = invoices.length;
     const paid = invoices.filter(i => i.status === "paid").length;
-    const unpaid = invoices.filter(i => i.status === "unpaid").length;
+    const open = invoices.filter(i => i.status === "open").length;
     const voided = invoices.filter(i => i.status === "void").length;
     const uncollectible = invoices.filter(i => i.status === "uncollectible").length;
 
@@ -270,7 +270,7 @@ export async function POST(req) {
     } else if (lowerQ.includes("paid")) {
       reply = `✅ Paid invoices: ${paid}`;
     } else if (lowerQ.includes("unpay")) {
-      reply = `🕗 Unpaid invoices: ${unpaid}`;
+      reply = `🕗 Unpaid invoices: ${open}`;
     } else if (lowerQ.includes("void")) {
       reply = `🚫 Voided invoices: ${voided}`;
     } else if (lowerQ.includes("uncollectible")) {
