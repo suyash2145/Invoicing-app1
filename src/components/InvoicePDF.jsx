@@ -108,29 +108,30 @@
 //   );
 // }
 
+
 "use client";
 import React from "react";
 import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
 
 const COMPANY_DETAILS = {
-  name: "YellowPlum",
-  address: "123 Business Street, Pune, India",
-  phone: "+91 9011585709",
-  email: "info@yellowplum.com",
-  logo: "/plum.png",
+  name: "YellowYolk",
+  address: "A-707, Fifth Avenue Hadapsar Pune - 411028",
+  phone: "+91-7767842722",
+  email: "connect@yellowyolk.com",
+  logo: "/yk.png",
 };
 
 const TAX_RATE = 0;
 
 const styles = StyleSheet.create({
   page: { padding: 40, fontSize: 12 },
-  header: { flexDirection: "row", justifyContent: "space-between", marginBottom: 30 },
-  logo: { width: 80, height: 80, marginBottom: 10 },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 30 },
+  logo: { width: 160, height: "auto", marginBottom: 10 },
   section: { marginBottom: 30 },
   textBold: { fontWeight: "bold" },
   companyInfo: { textAlign: "right" },
   customerInfo: { textAlign: "left" },
-  title: { fontSize: 18, fontWeight: "bold", marginBottom: 15 },
+  title: { fontSize: 18, fontWeight: "bold", marginBottom: 15, alignSelf: 'flex-start' },
   table: { width: "100%", marginBottom: 30 },
   tableRow: { flexDirection: "row", borderBottom: "1px solid #000", paddingVertical: 8 },
   tableHeader: { fontWeight: "bold", flex: 1, textAlign: "left" },
